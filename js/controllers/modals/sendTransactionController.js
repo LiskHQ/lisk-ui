@@ -129,8 +129,7 @@ angular.module('liskApp').controller('sendTransactionController', ['$scope', 'se
     $scope.isCorrectValue = function (currency, throwError) {
         currency = String(currency);
 
-        var parts = currency.trim().split('.');
-        var amount = parts[0];
+        var amount = parseFloat(currency.trim());
 
         if (!throwError) throwError = false;
 
@@ -147,35 +146,8 @@ angular.module('liskApp').controller('sendTransactionController', ['$scope', 'se
         if (amount == '' || amount == '0') {
             return error();
         }
-
-        // No fractional part
-        if (parts.length == 1) {
-            var fraction = '00000000';
-        } else if (parts.length == 2) {
-            if (parts[1].length <= 8) {
-                var fraction = parts[1];
-            } else {
-                var fraction = parts[1].substring(0, 8);
-            }
-        } else {
-            return error();
-        }
-
-        for (var i = fraction.length; i < 8; i++) {
-            fraction += '0';
-        }
-
-        var result = amount + '' + fraction;
-
-        // In case there's a comma or something else in there. At this point there should only be numbers.
-        if (!/^\d+$/.test(result)) {
-            return error();
-        }
-
-        // Remove leading zeroes
-        result = result.replace(/^0+/, '');
-
-        return parseInt(result);
+       
+        return amount;
     }
 
     $scope.convertLISK = function (currency) {
